@@ -2,9 +2,11 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { BCRYPT_SALT_ROUNDS } from '@/src/lib/constants/constants';
 import { SignInDto } from '@/src/modules/auth/dto/signIn.dto';
 import { UsersService } from '@/src/modules/users/users.service';
+import { Token } from '@/src/types/types';
+
+export const BCRYPT_SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
@@ -20,17 +22,14 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const isPasswordCorrect = await bcrypt.compare(user?.password, signInDto.password);
+    const isPasswordCorrect = await bcrypt.compare(signInDto.password, user.password);
 
     if (!isPasswordCorrect) {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: user.id, email: user.email };
-
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-    };
+    const tokens = await this.getTokens(user.id, user.email);
+    return tokens;
   }
 
   async signUp(signInDto: SignInDto) {
@@ -48,5 +47,34 @@ export class AuthService {
     const newUser = await this.userService.createUser(signInDto.email, hashedPassword);
 
     return newUser;
+  }
+
+  async getTokens(userId: string, email: string) {
+    const payload = { sub: userId, email };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_ACCESS_SECRET,
+        expiresIn: '60s',
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+      }),
+    ]);
+
+    return { accessToken, refreshToken };
+  }
+
+  async refreshToken(refreshToken: string) {
+    const oldToken: Token = await this.jwtService.decode(refreshToken);
+
+    const user = await this.userService.findOne(oldToken.sub);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return this.getTokens(user.id, user.email);
   }
 }
