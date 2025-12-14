@@ -5,17 +5,18 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
-  Res,
   Req,
+  Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signIn.dto';
 
 import { AuthGuard } from '@/src/modules/auth/auth.guard';
+import { RequestWithJWTPayload } from '@/src/types/types';
 
 @Controller('auth')
 export class AuthController {
@@ -47,14 +48,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Req() req) {
+  getProfile(@Req() req: RequestWithJWTPayload) {
     console.log('PROFILE');
     return req.user;
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Get('refresh')
-  async refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
+  async refresh(
+    @Req() req: RequestWithJWTPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     console.log('REFRESH');
     const refreshToken = req.cookies?.['refresh_token'] as string;
 

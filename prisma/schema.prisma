@@ -36,6 +36,8 @@ model Project {
   owner   User   @relation(fields: [ownerId], references: [id])
   ownerId String @map("owner_id")
 
+  projectStatus ProjectStatus @default(ACTIVE_DEVELOPMENT) @map("project_status")
+
   links   Link[]
   notes   Note[]
   secrets Secret[]
@@ -57,6 +59,12 @@ model Link {
   tags      Tag[]    @relation("LinksOnTags")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+enum ProjectStatus {
+  ACTIVE_DEVELOPMENT // активная разработка
+  MAINTENANCE // поддержка
+  COMPLETED // завершен
 }
 
 enum LinkType {
