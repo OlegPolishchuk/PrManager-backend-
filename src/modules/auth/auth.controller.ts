@@ -10,12 +10,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: SignInDto) {
+    console.log('LOGIN');
     return this.authService.signIn(signInDto);
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  singUp(@Body() signInDto: SignInDto) {
-    return this.authService.signUp(signInDto);
+  async singUp(@Body() signInDto: SignInDto) {
+    console.log('REGISTER');
+    await this.authService.signUp(signInDto);
   }
 }
