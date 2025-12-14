@@ -10,10 +10,17 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
-import { SignInDto } from './dto/signIn.dto';
+import { LoginResponseDto, SignInDto } from './dto/signIn.dto';
 
 import { AuthGuard } from '@/src/modules/auth/auth.guard';
 import { RequestWithJWTPayload } from '@/src/types/types';
@@ -22,6 +29,9 @@ import { RequestWithJWTPayload } from '@/src/types/types';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: 'Login user' })
+  @ApiBody({ type: SignInDto })
+  @ApiResponse({ status: 200, type: LoginResponseDto })
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
@@ -38,6 +48,9 @@ export class AuthController {
     return { accessToken };
   }
 
+  @ApiOperation({ summary: 'Register user' })
+  @ApiBody({ type: SignInDto })
+  @ApiResponse({ status: 201, description: 'User successfully registered' })
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async singUp(@Body() signInDto: SignInDto) {
@@ -45,6 +58,9 @@ export class AuthController {
     await this.authService.signUp(signInDto);
   }
 
+  @ApiBearerAuth() // берёт схему из .addBearerAuth() в main.ts
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Current user' })
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Get('profile')
@@ -53,6 +69,9 @@ export class AuthController {
     return req.user;
   }
 
+  @ApiCookieAuth('refresh_token') // просто пометка в схеме
+  @ApiOperation({ summary: 'Refresh access token using refresh_token cookie' })
+  @ApiResponse({ status: 201, type: LoginResponseDto })
   @HttpCode(HttpStatus.CREATED)
   @Get('refresh')
   async refresh(
