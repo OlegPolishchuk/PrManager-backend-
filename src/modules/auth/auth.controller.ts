@@ -20,7 +20,7 @@ import {
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
-import { LoginResponseDto, SignInDto } from './dto/signIn.dto';
+import { LoginResponseDto, SignInDto, UserDto } from './dto/signIn.dto';
 
 import { AuthGuard } from '@/src/modules/auth/auth.guard';
 import { RequestWithJWTPayload } from '@/src/types/types';
@@ -60,13 +60,13 @@ export class AuthController {
 
   @ApiBearerAuth() // берёт схему из .addBearerAuth() в main.ts
   @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'Current user' })
+  @ApiResponse({ status: 200, description: 'Current user', type: UserDto })
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Req() req: RequestWithJWTPayload) {
     console.log('PROFILE');
-    return req.user;
+    return this.authService.getProfile(req.user.sub);
   }
 
   @ApiCookieAuth('refresh_token') // просто пометка в схеме

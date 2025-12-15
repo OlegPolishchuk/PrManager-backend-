@@ -1,15 +1,25 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { User } from '@prisma/generated/prisma/client';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '@/src/core/prisma/prisma.service';
 import { UpdateUserDto } from '@/src/modules/users/dto/users.dto';
 
+type QueryOptions = Partial<{
+  withoutPassword?: boolean;
+}>;
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findOne(userId: string) {
-    return this.prisma.user.findUnique({ where: { id: userId } });
+  async findOne(userId: string, options?: QueryOptions) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: {
+        password: options?.withoutPassword,
+      },
+    });
   }
 
   async findOneByEmail(email: string) {

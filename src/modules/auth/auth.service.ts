@@ -77,4 +77,8 @@ export class AuthService {
 
     return this.getTokens(user.id, user.email);
   }
+
+  async getProfile(userId: string) {
+    return this.userService.findOne(userId, { withoutPassword: true });
+  }
 }
