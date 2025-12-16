@@ -45,6 +45,15 @@ export class AuthController {
       path: '/api/auth/refresh',
     });
 
+    // access на все API‑запросы
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/api',
+      maxAge: 15 * 60 * 1000,
+    });
+
     return { accessToken };
   }
 
@@ -96,6 +105,37 @@ export class AuthController {
       path: '/api/auth/refresh',
     });
 
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/api',
+      maxAge: 15 * 60 * 1000,
+    });
+
     return { accessToken };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({ status: 200, description: 'User successfully logged out' })
+  @Get('logout')
+  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    // очистка httpOnly-кук (опции должны совпадать с теми, что были при установке)
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/api',
+    });
+
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/api/auth/refresh',
+    });
+
+    return { success: true };
   }
 }
