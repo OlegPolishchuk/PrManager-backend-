@@ -24,7 +24,7 @@ export class ProjectDto {
   @ApiProperty()
   ownerId: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: ProjectStatus, enumName: 'ProjectStatus' })
   projectStatus: ProjectStatus;
 
   @ApiProperty()
