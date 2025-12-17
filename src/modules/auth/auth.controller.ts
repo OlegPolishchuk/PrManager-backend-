@@ -90,6 +90,8 @@ export class AuthController {
     console.log('REFRESH');
     const refreshToken = req.cookies?.['refresh_token'] as string;
 
+    console.log('refreshToken', refreshToken);
+
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
@@ -119,7 +121,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout user' })
   @ApiResponse({ status: 200, description: 'User successfully logged out' })
-  @Get('logout')
+  @Post('logout')
   logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     // очистка httpOnly-кук (опции должны совпадать с теми, что были при установке)
     res.clearCookie('access_token', {

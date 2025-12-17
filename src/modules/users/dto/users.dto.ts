@@ -20,7 +20,7 @@ export class UpdatePasswordDto {
   @ApiProperty({ example: 'OldPassword123' })
   @IsString()
   @IsNotEmpty()
-  oldPassword: string;
+  password: string;
 
   @ApiProperty({ example: 'NewPassword123!' })
   @IsString()

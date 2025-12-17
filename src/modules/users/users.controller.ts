@@ -49,7 +49,7 @@ export class UsersController {
     console.log('UPDATE PASSWORD');
     return this.userService.updatePassword({
       userId: id,
-      oldPassword: updatePasswordDto.oldPassword,
+      oldPassword: updatePasswordDto.password,
       newPassword: updatePasswordDto.newPassword,
     });
   }

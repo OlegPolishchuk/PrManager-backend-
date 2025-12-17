@@ -29,7 +29,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // выкидывает лишние поля
-      forbidNonWhitelisted: true,
+      // forbidNonWhitelisted: true, // выкидывает 400 при несоответсвии данных с DTO
       transform: true, // приводит типы к DTO
     }),
   );
