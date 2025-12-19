@@ -7,6 +7,8 @@ import { UsersService } from '@/src/modules/users/users.service';
 import { Token } from '@/src/types/types';
 
 export const BCRYPT_SALT_ROUNDS = 10;
+export const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000; // 15min
+export const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7d
 
 @Injectable()
 export class AuthService {
@@ -55,11 +57,11 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn: '5d',
+        expiresIn: ACCESS_TOKEN_MAX_AGE,
       }),
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: '7d',
+        expiresIn: REFRESH_TOKEN_MAX_AGE,
       }),
     ]);
 

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProjectStatus } from '@prisma/generated/prisma/enums';
-import { IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class ProjectDto {
   @ApiProperty()
@@ -46,4 +46,39 @@ export class PaginatedProjectsResponseDto {
 
   @ApiProperty()
   limit: number;
+}
+
+export class CreateProjectDto {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  color?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
+  @ApiProperty({
+    enum: ProjectStatus,
+    enumName: 'ProjectStatus',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(ProjectStatus)
+  projectStatus?: ProjectStatus;
+}
+
+export class UpdateProjectDto extends CreateProjectDto {
+  @ApiProperty()
+  id: string;
 }

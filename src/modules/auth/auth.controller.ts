@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { AuthService } from './auth.service';
+import { ACCESS_TOKEN_MAX_AGE, AuthService, REFRESH_TOKEN_MAX_AGE } from './auth.service';
 import { LoginResponseDto, SignInDto, UserDto } from './dto/signIn.dto';
 
 import { AuthGuard } from '@/src/modules/auth/auth.guard';
@@ -43,6 +43,7 @@ export class AuthController {
       secure: true,
       sameSite: 'strict',
       path: '/api/auth/refresh',
+      maxAge: REFRESH_TOKEN_MAX_AGE,
     });
 
     // access на все API‑запросы
@@ -51,7 +52,7 @@ export class AuthController {
       secure: true,
       sameSite: 'strict',
       path: '/api',
-      maxAge: 15 * 60 * 1000,
+      maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
     return { accessToken };
@@ -105,6 +106,7 @@ export class AuthController {
       secure: true,
       sameSite: 'strict',
       path: '/api/auth/refresh',
+      maxAge: REFRESH_TOKEN_MAX_AGE,
     });
 
     res.cookie('access_token', accessToken, {
@@ -112,7 +114,7 @@ export class AuthController {
       secure: true,
       sameSite: 'strict',
       path: '/api',
-      maxAge: 15 * 60 * 1000,
+      maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
     return { accessToken };

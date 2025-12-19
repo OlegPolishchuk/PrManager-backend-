@@ -1,14 +1,19 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Post,
+  Put,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -18,7 +23,12 @@ import {
 import { ProjectsService } from './projects.service';
 
 import { AuthGuard } from '@/src/modules/auth/auth.guard';
-import { PaginatedProjectsResponseDto } from '@/src/modules/projects/dto/projects.dto';
+import {
+  CreateProjectDto,
+  PaginatedProjectsResponseDto,
+  ProjectDto,
+  UpdateProjectDto,
+} from '@/src/modules/projects/dto/projects.dto';
 import { RequestWithJWTPayload } from '@/src/types/types';
 
 @ApiTags('Projects')
@@ -40,5 +50,30 @@ export class ProjectsController {
     @Query('limit') limit: number,
   ) {
     return this.projectsService.getProjects(req.user.sub, { page, limit });
+  }
+
+  @ApiOperation({ summary: 'Create new project' })
+  @ApiBody({ type: CreateProjectDto })
+  @ApiResponse({ status: 201, type: ProjectDto })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('create')
+  createProject(
+    @Body() createProjectDto: CreateProjectDto,
+    @Req() req: RequestWithJWTPayload,
+  ) {
+    const userId = req.user.sub;
+
+    return this.projectsService.createProject(createProjectDto, userId);
+  }
+
+  @ApiOperation({ summary: 'Update project' })
+  @ApiBody({ type: UpdateProjectDto })
+  @ApiResponse({ status: 200, type: ProjectDto })
+  @HttpCode(HttpStatus.OK)
+  @Put(':id')
+  updateProject(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
+    console.log('projectId =>', id);
+
+    return this.projectsService.updateProject(updateProjectDto);
   }
 }
