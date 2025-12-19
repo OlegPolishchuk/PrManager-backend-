@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -52,6 +54,15 @@ export class ProjectsController {
     return this.projectsService.getProjects(req.user.sub, { page, limit });
   }
 
+  @ApiOperation({ summary: 'Get user project' })
+  @ApiParam({ name: 'projectId', required: true, type: String })
+  @ApiResponse({ status: 200, type: ProjectDto })
+  @HttpCode(HttpStatus.OK)
+  @Get(':projectId')
+  getProject(@Param('projectId') projectId: string) {
+    return this.projectsService.getProjectById(projectId);
+  }
+
   @ApiOperation({ summary: 'Create new project' })
   @ApiBody({ type: CreateProjectDto })
   @ApiResponse({ status: 201, type: ProjectDto })
@@ -75,5 +86,13 @@ export class ProjectsController {
     console.log('projectId =>', id);
 
     return this.projectsService.updateProject(updateProjectDto);
+  }
+
+  @ApiOperation({ summary: 'Delete project' })
+  @ApiParam({ name: 'id', required: true, type: String, description: 'Project id' })
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id')
+  removeProject(@Param('id') id: string) {
+    return this.projectsService.removeProject(id);
   }
 }

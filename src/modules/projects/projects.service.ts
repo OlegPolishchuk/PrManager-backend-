@@ -32,6 +32,19 @@ export class ProjectsService {
     return { data: projects, totalCount: totalCount, limit, page };
   }
 
+  getProjectById(id: string) {
+    return this.prisma.project.findUnique({
+      where: { id },
+      include: {
+        links: {
+          include: {
+            tags: true,
+          },
+        },
+      },
+    });
+  }
+
   async createProject(createProjectDto: CreateProjectDto, userId: string) {
     return this.prisma.project.create({
       data: { ...createProjectDto, owner: { connect: { id: userId } } },
@@ -45,5 +58,9 @@ export class ProjectsService {
       where: { id },
       data: restData,
     });
+  }
+
+  removeProject(id: string) {
+    return this.prisma.project.delete({ where: { id } });
   }
 }

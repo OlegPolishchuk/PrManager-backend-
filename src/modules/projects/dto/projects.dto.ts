@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ProjectStatus } from '@prisma/generated/prisma/enums';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
+import { LinkDto } from '@/src/modules/links/dto/links.dto';
+
 export class ProjectDto {
   @ApiProperty()
   id: string;
@@ -26,6 +28,9 @@ export class ProjectDto {
 
   @ApiProperty({ enum: ProjectStatus, enumName: 'ProjectStatus' })
   projectStatus: ProjectStatus;
+
+  @ApiProperty({ type: [LinkDto], description: 'Project links' })
+  links: LinkDto[];
 
   @ApiProperty()
   createdAt: Date;
