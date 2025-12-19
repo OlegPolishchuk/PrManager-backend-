@@ -4,7 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 
 import { AuthModule } from '@/src/modules/auth/auth.module';
+import { LinksModule } from '@/src/modules/links/links.module';
 import { ProjectsModule } from '@/src/modules/projects/projects.module';
+import { TagsModule } from '@/src/modules/tags/tags.module';
 import { UsersModule } from '@/src/modules/users/users.module';
 
 @Module({
@@ -14,6 +16,8 @@ import { UsersModule } from '@/src/modules/users/users.module';
     AuthModule,
     UsersModule,
     ProjectsModule,
+    TagsModule,
+    LinksModule,
   ],
   controllers: [],
   providers: [],
