@@ -83,7 +83,4 @@ export class CreateProjectDto {
   projectStatus?: ProjectStatus;
 }
 
-export class UpdateProjectDto extends CreateProjectDto {
-  @ApiProperty()
-  id: string;
-}
+export class UpdateProjectDto extends CreateProjectDto {}

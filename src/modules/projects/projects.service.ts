@@ -51,12 +51,12 @@ export class ProjectsService {
     });
   }
 
-  async updateProject(updateProjectDto: UpdateProjectDto) {
-    const { id, ...restData } = updateProjectDto;
+  async updateProject(projectId: string, updateProjectDto: UpdateProjectDto) {
+    console.log('updateProjectDto', updateProjectDto);
 
     return this.prisma.project.update({
-      where: { id },
-      data: restData,
+      where: { id: projectId },
+      data: updateProjectDto,
     });
   }
 

@@ -85,7 +85,7 @@ export class ProjectsController {
   updateProject(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     console.log('projectId =>', id);
 
-    return this.projectsService.updateProject(updateProjectDto);
+    return this.projectsService.updateProject(id, updateProjectDto);
   }
 
   @ApiOperation({ summary: 'Delete project' })
