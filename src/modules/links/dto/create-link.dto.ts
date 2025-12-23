@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LinkType } from '@prisma/generated/prisma/enums';
-import { IsArray, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-
-import { TagDto } from '@/src/modules/tags/dto/tag.dto';
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class CreateLinkDto {
   @ApiProperty()
@@ -23,12 +21,11 @@ export class CreateLinkDto {
   description?: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsString()
   projectId: string;
 
   @ApiProperty({ type: [String], example: ['uuid1', 'uuid2'], required: false })
   @IsOptional()
   @IsArray()
-  @IsUUID('4', { each: true })
   tagIds?: string[];
 }

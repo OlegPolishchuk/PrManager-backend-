@@ -26,11 +26,15 @@ export class LinksService {
   }
 
   createLink(linkDto: CreateLinkDto) {
-    const { tagIds, ...data } = linkDto;
+    const { tagIds, projectId, ...data } = linkDto;
+
+    console.log('projectId =>', projectId);
+    console.log('linkDto =>', linkDto);
 
     return this.prisma.link.create({
       data: {
         ...data,
+        project: { connect: { id: projectId } },
         tags: tagIds?.length
           ? {
               connect: tagIds.map(id => ({ id })),
