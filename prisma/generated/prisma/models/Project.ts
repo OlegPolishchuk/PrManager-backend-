@@ -22,7 +22,7 @@ export type AggregateProject = {
   _min: ProjectMinAggregateOutputType | null
   _max: ProjectMaxAggregateOutputType | null
 }
-
+ 
 export type ProjectMinAggregateOutputType = {
   id: string | null
   name: string | null
@@ -55,7 +55,7 @@ export type ProjectCountAggregateOutputType = {
   icon: number
   ownerId: number
   projectStatus: number
-  createdAt: number 
+  createdAt: number
   updatedAt: number
   _all: number
 }

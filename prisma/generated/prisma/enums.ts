@@ -12,17 +12,18 @@ export const ProjectStatus = {
   ACTIVE_DEVELOPMENT: 'ACTIVE_DEVELOPMENT',
   MAINTENANCE: 'MAINTENANCE',
   COMPLETED: 'COMPLETED'
-} as const 
+} as const
 
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
 export const LinkType = {
-  REPO: 'REPO',
+  REPO: 'REPO', 
   FIGMA: 'FIGMA',
   DEV: 'DEV',
   PROD: 'PROD',
   DOCS: 'DOCS',
+  SWAGGER: 'SWAGGER',
   OTHER: 'OTHER'
 } as const
 

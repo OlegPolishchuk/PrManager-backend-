@@ -73,6 +73,7 @@ enum LinkType {
   DEV
   PROD
   DOCS
+  SWAGGER
   OTHER
 }
 

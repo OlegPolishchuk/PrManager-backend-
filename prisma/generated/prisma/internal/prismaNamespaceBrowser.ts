@@ -14,14 +14,14 @@
  * model files in the `model` directory!
  */
 
-import * as runtime from "@prisma/client/runtime/index-browser" 
+import * as runtime from "@prisma/client/runtime/index-browser"
 
 export type * from '../models'
 export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
-
+ 
 export const NullTypes = {
   DbNull: runtime.NullTypes.DbNull as (new (secret: never) => typeof runtime.DbNull),
   JsonNull: runtime.NullTypes.JsonNull as (new (secret: never) => typeof runtime.JsonNull),
