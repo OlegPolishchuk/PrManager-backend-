@@ -18,10 +18,10 @@ export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
 export const LinkType = {
-  REPO: 'REPO', 
+  REPO: 'REPO',
   FIGMA: 'FIGMA',
   DEV: 'DEV',
-  PROD: 'PROD',
+  PROD: 'PROD', 
   DOCS: 'DOCS',
   SWAGGER: 'SWAGGER',
   OTHER: 'OTHER'
@@ -30,10 +30,13 @@ export const LinkType = {
 export type LinkType = (typeof LinkType)[keyof typeof LinkType]
 
 
-export const NoteKind = {
-  GENERAL: 'GENERAL',
+export const RecordType = {
+  NOTE: 'NOTE',
+  CREDENTIALS: 'CREDENTIALS',
+  ENVIRONMENT: 'ENVIRONMENT',
+  PAYMENT_TEST: 'PAYMENT_TEST',
   REQUIREMENT: 'REQUIREMENT',
-  CREDENTIAL_HINT: 'CREDENTIAL_HINT'
+  OTHER: 'OTHER'
 } as const
 
-export type NoteKind = (typeof NoteKind)[keyof typeof NoteKind]
+export type RecordType = (typeof RecordType)[keyof typeof RecordType]

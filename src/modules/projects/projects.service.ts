@@ -41,6 +41,7 @@ export class ProjectsService {
             tags: true,
           },
         },
+        notes: {},
       },
     });
   }

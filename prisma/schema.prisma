@@ -39,7 +39,7 @@ model Project {
   projectStatus ProjectStatus @default(ACTIVE_DEVELOPMENT) @map("project_status")
 
   links   Link[]
-  notes   Note[]
+  notes   ProjectRecord[]
   secrets Secret[]
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -85,30 +85,53 @@ model Tag {
   @@unique([name])
 }
 
-model Note {
-  id      String   @id @default(cuid())
-  title   String
-  content String // markdown или просто текст
-  kind    NoteKind @default(GENERAL)
+model ProjectRecord {
+  id String @id @default(cuid())
 
-  project   Project @relation(fields: [projectId], references: [id])
+  type  RecordType @default(NOTE)
+  title String
+  value String
+  note  String? // textarea: любые инструкции/таблицы/пояснения (markdown можно)
+
+  links ProjectRecordLink[]
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String  @map("project_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([projectId, type, title])
+  @@index([projectId, type])
+  @@index([projectId, title])
 }
 
-enum NoteKind {
-  GENERAL // заметки
-  REQUIREMENT // ТЗ/доработки
-  CREDENTIAL_HINT // подсказки без секретов
+enum RecordType {
+  NOTE
+  CREDENTIALS
+  ENVIRONMENT
+  PAYMENT_TEST
+  REQUIREMENT
+  OTHER
+}
+
+model ProjectRecordLink {
+  id       String        @id @default(cuid())
+  record   ProjectRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  recordId String        @map("record_id")
+
+  title String?
+  url   String
+
+  @@index([recordId])
+  @@index([url])
 }
 
 model Secret {
   id          String  @id @default(cuid())
-  name        String // например "Prod DB", "Admin panel"
+  name        String
   username    String?
-  value       String // зашифрованное значение
+  value       String
   description String?
 
   project   Project @relation(fields: [projectId], references: [id])

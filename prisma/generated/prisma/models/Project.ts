@@ -21,8 +21,8 @@ export type AggregateProject = {
   _count: ProjectCountAggregateOutputType | null
   _min: ProjectMinAggregateOutputType | null
   _max: ProjectMaxAggregateOutputType | null
-}
- 
+} 
+
 export type ProjectMinAggregateOutputType = {
   id: string | null
   name: string | null
@@ -215,7 +215,7 @@ export type ProjectWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   links?: Prisma.LinkListRelationFilter
-  notes?: Prisma.NoteListRelationFilter
+  notes?: Prisma.ProjectRecordListRelationFilter
   secrets?: Prisma.SecretListRelationFilter
 }
 
@@ -231,7 +231,7 @@ export type ProjectOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   links?: Prisma.LinkOrderByRelationAggregateInput
-  notes?: Prisma.NoteOrderByRelationAggregateInput
+  notes?: Prisma.ProjectRecordOrderByRelationAggregateInput
   secrets?: Prisma.SecretOrderByRelationAggregateInput
 }
 
@@ -250,7 +250,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   links?: Prisma.LinkListRelationFilter
-  notes?: Prisma.NoteListRelationFilter
+  notes?: Prisma.ProjectRecordListRelationFilter
   secrets?: Prisma.SecretListRelationFilter
 }, "id">
 
@@ -295,7 +295,7 @@ export type ProjectCreateInput = {
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
   links?: Prisma.LinkCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretCreateNestedManyWithoutProjectInput
 }
 
@@ -310,7 +310,7 @@ export type ProjectUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   links?: Prisma.LinkUncheckedCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordUncheckedCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -325,7 +325,7 @@ export type ProjectUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
   links?: Prisma.LinkUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUpdateManyWithoutProjectNestedInput
 }
 
@@ -340,7 +340,7 @@ export type ProjectUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   links?: Prisma.LinkUncheckedUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUncheckedUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -528,7 +528,7 @@ export type ProjectCreateWithoutOwnerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   links?: Prisma.LinkCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretCreateNestedManyWithoutProjectInput
 }
 
@@ -542,7 +542,7 @@ export type ProjectUncheckedCreateWithoutOwnerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   links?: Prisma.LinkUncheckedCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordUncheckedCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -597,7 +597,7 @@ export type ProjectCreateWithoutLinksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
-  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretCreateNestedManyWithoutProjectInput
 }
 
@@ -611,7 +611,7 @@ export type ProjectUncheckedCreateWithoutLinksInput = {
   projectStatus?: $Enums.ProjectStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordUncheckedCreateNestedManyWithoutProjectInput
   secrets?: Prisma.SecretUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -641,7 +641,7 @@ export type ProjectUpdateWithoutLinksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUpdateManyWithoutProjectNestedInput
 }
 
@@ -655,7 +655,7 @@ export type ProjectUncheckedUpdateWithoutLinksInput = {
   projectStatus?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUncheckedUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -742,7 +742,7 @@ export type ProjectCreateWithoutSecretsInput = {
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
   links?: Prisma.LinkCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutSecretsInput = {
@@ -756,7 +756,7 @@ export type ProjectUncheckedCreateWithoutSecretsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   links?: Prisma.LinkUncheckedCreateNestedManyWithoutProjectInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
+  notes?: Prisma.ProjectRecordUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutSecretsInput = {
@@ -786,7 +786,7 @@ export type ProjectUpdateWithoutSecretsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
   links?: Prisma.LinkUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutSecretsInput = {
@@ -800,7 +800,7 @@ export type ProjectUncheckedUpdateWithoutSecretsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   links?: Prisma.LinkUncheckedUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyOwnerInput = {
@@ -824,7 +824,7 @@ export type ProjectUpdateWithoutOwnerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   links?: Prisma.LinkUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUpdateManyWithoutProjectNestedInput
 }
 
@@ -838,7 +838,7 @@ export type ProjectUncheckedUpdateWithoutOwnerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   links?: Prisma.LinkUncheckedUpdateManyWithoutProjectNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
+  notes?: Prisma.ProjectRecordUncheckedUpdateManyWithoutProjectNestedInput
   secrets?: Prisma.SecretUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -891,7 +891,7 @@ export type ProjectCountOutputTypeCountLinksArgs<ExtArgs extends runtime.Types.E
  * ProjectCountOutputType without action
  */
 export type ProjectCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.NoteWhereInput
+  where?: Prisma.ProjectRecordWhereInput
 }
 
 /**
@@ -977,7 +977,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     owner: Prisma.$UserPayload<ExtArgs>
     links: Prisma.$LinkPayload<ExtArgs>[]
-    notes: Prisma.$NotePayload<ExtArgs>[]
+    notes: Prisma.$ProjectRecordPayload<ExtArgs>[]
     secrets: Prisma.$SecretPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1386,7 +1386,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   links<T extends Prisma.Project$linksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$linksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  notes<T extends Prisma.Project$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notes<T extends Prisma.Project$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   secrets<T extends Prisma.Project$secretsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$secretsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecretPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1850,23 +1850,23 @@ export type Project$linksArgs<ExtArgs extends runtime.Types.Extensions.InternalA
  */
 export type Project$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Note
+   * Select specific fields to fetch from the ProjectRecord
    */
-  select?: Prisma.NoteSelect<ExtArgs> | null
+  select?: Prisma.ProjectRecordSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Note
+   * Omit specific fields from the ProjectRecord
    */
-  omit?: Prisma.NoteOmit<ExtArgs> | null
+  omit?: Prisma.ProjectRecordOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.NoteInclude<ExtArgs> | null
-  where?: Prisma.NoteWhereInput
-  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
-  cursor?: Prisma.NoteWhereUniqueInput
+  include?: Prisma.ProjectRecordInclude<ExtArgs> | null
+  where?: Prisma.ProjectRecordWhereInput
+  orderBy?: Prisma.ProjectRecordOrderByWithRelationInput | Prisma.ProjectRecordOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectRecordWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
+  distinct?: Prisma.ProjectRecordScalarFieldEnum | Prisma.ProjectRecordScalarFieldEnum[]
 }
 
 /**
