@@ -6,6 +6,7 @@ import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 
 import { PrismaService } from '@/src/core/prisma/prisma.service';
+import { NoteDto } from '@/src/modules/notes/dto/note.dto';
 import { PaginatedRequestFields } from '@/src/types/types';
 
 @Injectable()
@@ -46,7 +47,7 @@ export class NotesService {
     const page = paginationFields?.page ?? 1;
     const limit = paginationFields?.limit ?? 100;
 
-    const data = await this.prisma.projectRecord.findMany({
+    const rows = await this.prisma.projectRecord.findMany({
       where: { projectId },
       orderBy: { updatedAt: 'asc' },
       include: { items: true, links: true },
@@ -54,16 +55,66 @@ export class NotesService {
       take: limit,
     });
 
+    console.log('rows =>', rows);
+
     const totalCount = await this.prisma.projectRecord.count({ where: { projectId } });
+
+    const data: NoteDto[] = rows.map(r => ({
+      id: r.id,
+      type: r.type,
+      note: r.note ?? undefined,
+      groupTitle: r.groupTitle ?? undefined,
+      records: r.items.map(i => ({
+        id: i.id,
+        recordId: i.recordId,
+        title: i.title,
+        value: i.value,
+      })),
+      links: r.links.map(l => ({
+        id: l.id,
+        recordId: l.recordId,
+        title: l.title ?? undefined,
+        url: l.url,
+      })),
+      projectId: r.projectId,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
+    }));
 
     return { data, totalCount, page, limit };
   }
 
-  findOne(projectId: string, id: string) {
-    return this.prisma.projectRecord.findFirst({
+  async findOne(projectId: string, id: string) {
+    const r = await this.prisma.projectRecord.findFirst({
       where: { id, projectId },
       include: { items: true, links: true },
     });
+
+    if (!r) return null;
+
+    const dto: NoteDto = {
+      id: r.id,
+      type: r.type,
+      note: r.note ?? undefined,
+      groupTitle: r.groupTitle ?? undefined,
+      records: r.items.map(i => ({
+        id: i.id,
+        recordId: i.recordId,
+        title: i.title,
+        value: i.value,
+      })),
+      links: r.links.map(l => ({
+        id: l.id,
+        recordId: l.recordId,
+        title: l.title ?? undefined,
+        url: l.url,
+      })),
+      projectId: r.projectId,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
+    };
+
+    return dto;
   }
 
   async update(projectId: string, id: string, dto: UpdateNoteDto) {

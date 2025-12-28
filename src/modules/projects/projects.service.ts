@@ -32,18 +32,41 @@ export class ProjectsService {
     return { data: projects, totalCount: totalCount, limit, page };
   }
 
-  getProjectById(id: string) {
-    return this.prisma.project.findUnique({
+  async getProjectById(id: string) {
+    const project = await this.prisma.project.findUnique({
       where: { id },
       include: {
-        links: {
-          include: {
-            tags: true,
-          },
-        },
-        notes: {},
+        links: { include: { tags: true } },
+        notes: { include: { items: true, links: true } },
       },
     });
+
+    if (!project) return null;
+
+    return {
+      ...project,
+      notes: project.notes.map(n => ({
+        id: n.id,
+        type: n.type,
+        note: n.note ?? undefined,
+        groupTitle: n.groupTitle ?? undefined,
+        records: n.items.map(i => ({
+          id: i.id,
+          recordId: i.recordId,
+          title: i.title,
+          value: i.value,
+        })),
+        links: n.links.map(l => ({
+          id: l.id,
+          recordId: l.recordId,
+          title: l.title ?? undefined,
+          url: l.url,
+        })),
+        projectId: n.projectId,
+        createdAt: n.createdAt.toISOString(),
+        updatedAt: n.updatedAt.toISOString(),
+      })),
+    };
   }
 
   async createProject(createProjectDto: CreateProjectDto, userId: string) {

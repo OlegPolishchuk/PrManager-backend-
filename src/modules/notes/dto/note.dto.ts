@@ -58,3 +58,33 @@ export class PaginatedProjectRecordsResponseDto {
   @ApiProperty() page: number;
   @ApiProperty() limit: number;
 }
+
+export function toNoteDto(r: any): NoteDto {
+  return {
+    id: r.id,
+    type: r.type,
+    note: r.note ?? undefined,
+    groupTitle: r.groupTitle ?? undefined,
+
+    // rename items -> records
+    records: (r.items ?? []).map((i: any) => ({
+      id: i.id,
+      recordId: i.recordId,
+      title: i.title,
+      value: i.value,
+    })),
+
+    links: (r.links ?? []).map((l: any) => ({
+      id: l.id,
+      recordId: l.recordId,
+      title: l.title ?? undefined,
+      url: l.url,
+    })),
+
+    projectId: r.projectId,
+    createdAt:
+      r.createdAt instanceof Date ? r.createdAt.toISOString() : String(r.createdAt),
+    updatedAt:
+      r.updatedAt instanceof Date ? r.updatedAt.toISOString() : String(r.updatedAt),
+  };
+}
