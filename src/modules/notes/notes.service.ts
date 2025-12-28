@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ProjectRecordUpdateInput } from '@prisma/generated/prisma/models/ProjectRecord';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/generated/prisma/client';
+import { RecordType } from '@prisma/generated/prisma/enums';
 
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -11,27 +12,33 @@ import { PaginatedRequestFields } from '@/src/types/types';
 export class NotesService {
   constructor(private prisma: PrismaService) {}
 
-  create(projectId: string, createNoteDto: CreateNoteDto) {
-    const { links, ...data } = createNoteDto;
+  create(projectId: string, dto: CreateNoteDto) {
+    // Если NOTE — records могут быть пустыми (по твоей модели)
+    if (dto.type !== RecordType.NOTE && !dto.records?.length) {
+      throw new BadRequestException('records must not be empty');
+    }
+
+    // Если NOTE — items/links можно не создавать
+    const records = dto.records ?? [];
+
+    const links =
+      records.flatMap(r => r.links?.map(l => ({ title: l.title, url: l.url })) ?? []) ??
+      [];
 
     return this.prisma.projectRecord.create({
       data: {
-        ...data,
-        project: {
-          connect: { id: projectId },
-        },
-        links: links?.length
-          ? {
-              create: links.map(l => ({
-                title: l.title,
-                url: l.url,
-              })),
-            }
+        project: { connect: { id: projectId } },
+        type: dto.type,
+        groupTitle: dto.groupTitle,
+        note: dto.note,
+        items: records.length
+          ? { create: records.map(r => ({ title: r.title, value: r.value })) }
+          : undefined,
+        links: links.length
+          ? { create: links.map(l => ({ title: l.title, url: l.url })) }
           : undefined,
       },
-      include: {
-        links: true,
-      },
+      include: { items: true, links: true },
     });
   }
 
@@ -39,55 +46,89 @@ export class NotesService {
     const page = paginationFields?.page ?? 1;
     const limit = paginationFields?.limit ?? 100;
 
-    const notes = await this.prisma.projectRecord.findMany({
+    const data = await this.prisma.projectRecord.findMany({
       where: { projectId },
       orderBy: { updatedAt: 'asc' },
+      include: { items: true, links: true },
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
     const totalCount = await this.prisma.projectRecord.count({ where: { projectId } });
 
-    return { data: notes, totalCount: totalCount, page, limit };
+    return { data, totalCount, page, limit };
   }
 
   findOne(projectId: string, id: string) {
-    return this.prisma.projectRecord.findUnique({
-      where: { projectId, id },
+    return this.prisma.projectRecord.findFirst({
+      where: { id, projectId },
+      include: { items: true, links: true },
     });
   }
 
   async update(projectId: string, id: string, dto: UpdateNoteDto) {
-    const { links, ...rest } = dto;
+    // (опционально, но правильно) проверяем принадлежность заметки проекту
+    const existing = await this.prisma.projectRecord.findFirst({
+      where: { id, projectId },
+      select: { id: true },
+    });
+    if (!existing) throw new BadRequestException('Note not found');
 
-    // Собираем только те scalar-поля, которые реально пришли
-    const data: ProjectRecordUpdateInput = {
-      ...(rest.type !== undefined ? { type: rest.type } : {}),
-      ...(rest.title !== undefined ? { title: rest.title } : {}),
-      ...(rest.value !== undefined ? { value: rest.value } : {}),
-      ...(rest.note !== undefined ? { note: rest.note } : {}),
-      ...(rest.isSecret !== undefined ? { isSecret: rest.isSecret } : {}),
+    const data: Prisma.ProjectRecordUpdateInput = {
+      ...(dto.groupTitle !== undefined ? { groupTitle: dto.groupTitle } : {}),
+      ...(dto.note !== undefined ? { note: dto.note } : {}),
+      ...(dto.type !== undefined ? { type: dto.type } : {}),
     };
 
-    // Если links пришли — заменяем все links этой заметки на новый список
-    if (links !== undefined) {
-      data.links = {
-        deleteMany: {},
-        create: links.map(l => ({
-          title: l.title,
-          url: l.url,
+    if (dto.records !== undefined) {
+      // Если по правилам non-NOTE всегда должен иметь records — проверяй здесь.
+      // Если NOTE может быть без records — убери/смягчи эту проверку.
+      if (dto.records.length === 0) {
+        throw new BadRequestException('records must not be empty');
+      }
+
+      const links =
+        dto.records.flatMap(
+          r => r.links?.map(l => ({ title: l.title, url: l.url })) ?? [],
+        ) ?? [];
+
+      data.items = {
+        deleteMany: {}, // удалит все связанные items у этой записи
+        create: dto.records.map(r => ({
+          title: r.title,
+          value: r.value,
         })),
       };
+
+      data.links = links.length
+        ? {
+            deleteMany: {}, // удалит все связанные links у этой записи
+            create: links.map(l => ({
+              title: l.title,
+              url: l.url,
+            })),
+          }
+        : {
+            deleteMany: {}, // если ссылок не пришло — просто очищаем
+          };
     }
 
     return this.prisma.projectRecord.update({
-      where: { id, projectId },
+      where: { id },
       data,
-      include: { links: true },
+      include: { items: true, links: true },
     });
   }
 
-  remove(projectId: string, id: string) {
-    return this.prisma.projectRecord.delete({
+  async remove(projectId: string, id: string) {
+    // чтобы гарантировать принадлежность проекту — проверяем, затем удаляем по unique id
+    const existing = await this.prisma.projectRecord.findFirst({
       where: { id, projectId },
+      select: { id: true },
     });
+
+    if (!existing) throw new BadRequestException('Note not found');
+
+    return this.prisma.projectRecord.delete({ where: { id } });
   }
 }

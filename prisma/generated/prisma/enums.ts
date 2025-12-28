@@ -21,7 +21,7 @@ export const LinkType = {
   REPO: 'REPO',
   FIGMA: 'FIGMA',
   DEV: 'DEV',
-  PROD: 'PROD', 
+  PROD: 'PROD',
   DOCS: 'DOCS',
   SWAGGER: 'SWAGGER',
   OTHER: 'OTHER'

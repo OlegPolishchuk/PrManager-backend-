@@ -17,9 +17,9 @@
 import * as runtime from "@prisma/client/runtime/index-browser"
 
 export type * from '../models'
-export type * from './prismaNamespace' 
+export type * from './prismaNamespace'
 
-export const Decimal = runtime.Decimal
+export const Decimal = runtime.Decimal 
 
 
 export const NullTypes = {
@@ -55,6 +55,7 @@ export const ModelName = {
   Link: 'Link',
   Tag: 'Tag',
   ProjectRecord: 'ProjectRecord',
+  ProjectRecordItem: 'ProjectRecordItem',
   ProjectRecordLink: 'ProjectRecordLink',
   Secret: 'Secret'
 } as const
@@ -128,15 +129,24 @@ export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagSca
 export const ProjectRecordScalarFieldEnum = {
   id: 'id',
   type: 'type',
-  title: 'title',
-  value: 'value',
   note: 'note',
+  groupTitle: 'groupTitle',
   projectId: 'projectId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProjectRecordScalarFieldEnum = (typeof ProjectRecordScalarFieldEnum)[keyof typeof ProjectRecordScalarFieldEnum]
+
+
+export const ProjectRecordItemScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  value: 'value',
+  recordId: 'recordId'
+} as const
+
+export type ProjectRecordItemScalarFieldEnum = (typeof ProjectRecordItemScalarFieldEnum)[keyof typeof ProjectRecordItemScalarFieldEnum]
 
 
 export const ProjectRecordLinkScalarFieldEnum = {

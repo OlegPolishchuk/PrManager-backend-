@@ -23,11 +23,8 @@ export class CreateRecordLinkDto {
   url: string;
 }
 
-export class CreateNoteDto {
-  @ApiProperty({ enum: RecordType, enumName: 'RecordType' })
-  @IsEnum(RecordType)
-  type: RecordType;
-
+// DTO для одной строки внутри группы (без type)
+export class CreateRecordItemDto {
   @ApiProperty()
   @IsString()
   title: string;
@@ -36,7 +33,39 @@ export class CreateNoteDto {
   @IsString()
   value: string;
 
-  @ApiProperty({ required: false, description: 'Markdown/textarea' })
+  @ApiProperty({ type: [CreateRecordLinkDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateRecordLinkDto)
+  links?: CreateRecordLinkDto[];
+}
+
+// Если тебе всё ещё нужен DTO “record” где есть type (например для других ручек) — оставь
+export class CreateRecordDto extends CreateRecordItemDto {
+  @ApiProperty({ enum: RecordType, enumName: 'RecordType' })
+  @IsEnum(RecordType)
+  type: RecordType;
+}
+
+export class CreateNoteDto {
+  @ApiProperty({ enum: RecordType, enumName: 'RecordType' })
+  @IsEnum(RecordType)
+  type: RecordType;
+
+  @ApiProperty({ required: false, description: 'Group title (only for non-NOTE types)' })
+  @IsOptional()
+  @IsString()
+  groupTitle?: string;
+
+  @ApiProperty({ type: [CreateRecordItemDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateRecordItemDto)
+  records?: CreateRecordItemDto[];
+
+  @ApiProperty({ required: false, description: 'Markdown/text note (only for NOTE)' })
   @IsOptional()
   @IsString()
   note?: string;
@@ -45,11 +74,4 @@ export class CreateNoteDto {
   @IsOptional()
   @IsBoolean()
   isSecret?: boolean;
-
-  @ApiProperty({ type: [CreateRecordLinkDto], required: false })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateRecordLinkDto)
-  links?: CreateRecordLinkDto[];
 }

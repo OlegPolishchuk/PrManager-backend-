@@ -86,14 +86,15 @@ model Tag {
 }
 
 model ProjectRecord {
-  id String @id @default(cuid())
+  id   String     @id @default(cuid())
+  type RecordType
 
-  type  RecordType @default(NOTE)
-  title String
-  value String
-  note  String? // textarea: любые инструкции/таблицы/пояснения (markdown можно)
-
-  links ProjectRecordLink[]
+  // NOTE:
+  note       String?
+  // НЕ NOTE:
+  groupTitle String?             @map("group_title")
+  links      ProjectRecordLink[]
+  items      ProjectRecordItem[] // records[] с фронта
 
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String  @map("project_id")
@@ -101,9 +102,20 @@ model ProjectRecord {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([projectId, type, title])
   @@index([projectId, type])
-  @@index([projectId, title])
+}
+
+model ProjectRecordItem {
+  id    String @id @default(cuid())
+  title String
+  value String
+
+  record   ProjectRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  recordId String        @map("record_id")
+  // опционально: уникальность внутри группы
+  // @@unique([recordId, title])
+
+  @@index([recordId])
 }
 
 enum RecordType {

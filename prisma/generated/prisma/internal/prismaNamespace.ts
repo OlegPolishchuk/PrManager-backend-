@@ -16,9 +16,9 @@
 
 import * as runtime from "@prisma/client/runtime/client"
 import type * as Prisma from "../models"
-import { type PrismaClient } from "./class"
+import { type PrismaClient } from "./class" 
 
-export type * from '../models' 
+export type * from '../models'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -388,6 +388,7 @@ export const ModelName = {
   Link: 'Link',
   Tag: 'Tag',
   ProjectRecord: 'ProjectRecord',
+  ProjectRecordItem: 'ProjectRecordItem',
   ProjectRecordLink: 'ProjectRecordLink',
   Secret: 'Secret'
 } as const
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "link" | "tag" | "projectRecord" | "projectRecordLink" | "secret"
+    modelProps: "user" | "project" | "link" | "tag" | "projectRecord" | "projectRecordItem" | "projectRecordLink" | "secret"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -779,6 +780,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProjectRecordItem: {
+      payload: Prisma.$ProjectRecordItemPayload<ExtArgs>
+      fields: Prisma.ProjectRecordItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectRecordItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectRecordItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectRecordItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectRecordItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectRecordItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectRecordItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectRecordItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectRecordItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectRecordItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        update: {
+          args: Prisma.ProjectRecordItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectRecordItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectRecordItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectRecordItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectRecordItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRecordItemPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectRecordItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectRecordItem>
+        }
+        groupBy: {
+          args: Prisma.ProjectRecordItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRecordItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectRecordItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRecordItemCountAggregateOutputType> | number
+        }
+      }
+    }
     ProjectRecordLink: {
       payload: Prisma.$ProjectRecordLinkPayload<ExtArgs>
       fields: Prisma.ProjectRecordLinkFieldRefs
@@ -1019,15 +1094,24 @@ export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagSca
 export const ProjectRecordScalarFieldEnum = {
   id: 'id',
   type: 'type',
-  title: 'title',
-  value: 'value',
   note: 'note',
+  groupTitle: 'groupTitle',
   projectId: 'projectId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ProjectRecordScalarFieldEnum = (typeof ProjectRecordScalarFieldEnum)[keyof typeof ProjectRecordScalarFieldEnum]
+
+
+export const ProjectRecordItemScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  value: 'value',
+  recordId: 'recordId'
+} as const
+
+export type ProjectRecordItemScalarFieldEnum = (typeof ProjectRecordItemScalarFieldEnum)[keyof typeof ProjectRecordItemScalarFieldEnum]
 
 
 export const ProjectRecordLinkScalarFieldEnum = {
@@ -1267,6 +1351,7 @@ export type GlobalOmitConfig = {
   link?: Prisma.LinkOmit
   tag?: Prisma.TagOmit
   projectRecord?: Prisma.ProjectRecordOmit
+  projectRecordItem?: Prisma.ProjectRecordItemOmit
   projectRecordLink?: Prisma.ProjectRecordLinkOmit
   secret?: Prisma.SecretOmit
 }

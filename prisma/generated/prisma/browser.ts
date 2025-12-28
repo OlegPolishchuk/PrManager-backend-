@@ -18,9 +18,9 @@ export * as $Enums from './enums'
 export * from './enums';
 /**
  * Model User
- *  
+ * 
  */
-export type User = Prisma.UserModel
+export type User = Prisma.UserModel 
 /**
  * Model Project
  * 
@@ -41,6 +41,11 @@ export type Tag = Prisma.TagModel
  * 
  */
 export type ProjectRecord = Prisma.ProjectRecordModel
+/**
+ * Model ProjectRecordItem
+ * 
+ */
+export type ProjectRecordItem = Prisma.ProjectRecordItemModel
 /**
  * Model ProjectRecordLink
  * 

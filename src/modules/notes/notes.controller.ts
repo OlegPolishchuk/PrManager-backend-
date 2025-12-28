@@ -22,6 +22,8 @@ export class NotesController {
   @ApiOperation({ summary: 'Create note in project' })
   @ApiCreatedResponse({ type: NoteDto })
   create(@Param('projectId') projectId: string, @Body() dto: CreateNoteDto) {
+    console.log('CREATE PROJECT NOTE');
+
     return this.notesService.create(projectId, dto);
   }
 
